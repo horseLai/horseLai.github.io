@@ -6,22 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://horselai.github.io">
-  <title>OkHttp 源码分析 | horseLai</title>
+  <title>horseLai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。 本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没">
+  <meta name="description" content="title: OkHttp 源码分析date: 2019-06-02 01:53:15 tags:一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OkHttp 源码分析">
-<meta property="og:url" content="https://horselai.github.io/2019/06/02/OkHttp源码分析/index.html">
+<meta property="og:title" content="horseLai">
+<meta property="og:url" content="https://horselai.github.io/2019/06/01/OkHttp源码分析/index.html">
 <meta property="og:site_name" content="horseLai">
-<meta property="og:description" content="一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。 本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没">
+<meta property="og:description" content="title: OkHttp 源码分析date: 2019-06-02 01:53:15 tags:一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-f0bc111a3f8d06f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-e986fd97b4d130c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-d15b7b6118737e1f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-06-01T18:02:17.505Z">
+<meta property="og:updated_time" content="2019-06-01T18:04:45.269Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="OkHttp 源码分析">
-<meta name="twitter:description" content="一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。 本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没">
+<meta name="twitter:title" content="horseLai">
+<meta name="twitter:description" content="title: OkHttp 源码分析date: 2019-06-02 01:53:15 tags:一、引言在我们日常开发中，OkHttp可谓是最常用的开源库之一，目前就连Android API中的网络请求接口都是用的OkHttp，好吧，真的很强。 在上学期间我也曾阅读和分析过OkHttp的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5879616-f0bc111a3f8d06f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="horseLai" type="application/atom+xml">
@@ -165,25 +165,11 @@
             <article id="post-OkHttp源码分析" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      OkHttp 源码分析
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/OkHttp源码分析/" class="archive-article-date">
-  	<time datetime="2019-06-01T17:53:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>在我们日常开发中，<code>OkHttp</code>可谓是最常用的开源库之一，目前就连<code>Android API</code>中的网络请求接口都是用的<code>OkHttp</code>，好吧，真的很强。</p>
+<p>title: OkHttp 源码分析<br>date: 2019-06-02 01:53:15</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>在我们日常开发中，<code>OkHttp</code>可谓是最常用的开源库之一，目前就连<code>Android API</code>中的网络请求接口都是用的<code>OkHttp</code>，好吧，真的很强。</p>
 <p>在上学期间我也曾阅读和分析过<code>OkHttp</code>的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。</p>
 <p>本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没有理解到位，还请发现问题的童鞋理性指出。</p>
 <a id="more"></a>
@@ -430,7 +416,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://horselai.github.io/2019/06/02/OkHttp源码分析/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://horselai.github.io/2019/06/01/OkHttp源码分析/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -444,11 +430,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/06/02/Retrofit源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/06/01/Retrofit源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Retrofit 源码分析
+          (no title)
         
       </div>
     </a>
