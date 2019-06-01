@@ -6,15 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://horselai.github.io">
-  <title>horseLai</title>
+  <title>Android 进程间通信 | horseLai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="horseLai">
-<meta property="og:url" content="https://horselai.github.io/index.html">
+  <meta name="description" content="一、引言关于Android中的进程间通信，我们知道大概可以通过以下方式进行：  Bundle：四大组件间通信 File：文件共享 ContentProvider：应用间数据共享 AIDL：Binder机制 Messager：基于AIDL、Handler实现 Socket：建立C/S通信模型  本文主要探索的是AIDL和Socket两种实现方式，并在日常使用的基础上根据AIDL所生成的代码分析 Bi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 进程间通信">
+<meta property="og:url" content="https://horselai.github.io/2019/06/02/Android-进程间通信/index.html">
 <meta property="og:site_name" content="horseLai">
+<meta property="og:description" content="一、引言关于Android中的进程间通信，我们知道大概可以通过以下方式进行：  Bundle：四大组件间通信 File：文件共享 ContentProvider：应用间数据共享 AIDL：Binder机制 Messager：基于AIDL、Handler实现 Socket：建立C/S通信模型  本文主要探索的是AIDL和Socket两种实现方式，并在日常使用的基础上根据AIDL所生成的代码分析 Bi">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-f53350287d6fac66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-dc67447c3d62653d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-b48b47ff8b940623.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-5644504702a70c01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-c4f67681c4e902e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-c1e546e703174f31.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-560c9a9e1d25a1c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-d6b681bc8d4ef7da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-f120f2f156a75086.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-06-01T18:11:02.145Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="horseLai">
+<meta name="twitter:title" content="Android 进程间通信">
+<meta name="twitter:description" content="一、引言关于Android中的进程间通信，我们知道大概可以通过以下方式进行：  Bundle：四大组件间通信 File：文件共享 ContentProvider：应用间数据共享 AIDL：Binder机制 Messager：基于AIDL、Handler实现 Socket：建立C/S通信模型  本文主要探索的是AIDL和Socket两种实现方式，并在日常使用的基础上根据AIDL所生成的代码分析 Bi">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5879616-f53350287d6fac66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="horseLai" type="application/atom+xml">
   
@@ -154,150 +168,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Retrofit-源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Android-进程间通信" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/Retrofit-源码分析/">Retrofit 源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/Retrofit-源码分析/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:09:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p><code>Retrofit</code>和 <code>OKHttp</code>同为 <code>square</code> 出品的网络请求相关库，不同的是 <code>Retrofit</code>本身不进行网络请求，而是作为一个协调者，协调其他组件共同处理网络请求。用官网描述来说就是：<code>Retrofit</code>是可插拔的，它允许不同的执行机制和类库用于执行<code>HTTP</code>请求、允许不同序列化的类库进行<code>java</code>实体类与<code>HTTP</code>响应数据之间转换。</p>
-<p><code>Retrofit</code>的网络请求部分默认基于<code>OkHttp</code>，关于<code>OkHttp</code>，鄙人写过 <a href="https://www.jianshu.com/p/ac5bc7698553" target="_blank" rel="noopener"><code>OkHttp源码分析</code></a>一文，感兴趣的童鞋可以看看。</p>
-<p>本文纯属基于个人理解，源码解析不限于执行流程，因此受限于知识水平，有些地方可能依然没有理解到位，还请发现问题的童鞋理性指出。</p>
-        
-          <a class="article-more-a" href="/2019/06/02/Retrofit-源码分析/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/Retrofit-源码分析/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-OkHttp-源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/OkHttp-源码分析/">OkHttp 源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/OkHttp-源码分析/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>在我们日常开发中，<code>OkHttp</code>可谓是最常用的开源库之一，目前就连<code>Android API</code>中的网络请求接口都是用的<code>OkHttp</code>，好吧，真的很强。</p>
-<p>在上学期间我也曾阅读和分析过<code>OkHttp</code>的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。</p>
-<p>本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没有理解到位，还请发现问题的童鞋理性指出。</p>
-        
-          <a class="article-more-a" href="/2019/06/02/OkHttp-源码分析/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/OkHttp-源码分析/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Android-进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/Android-进程间通信/">Android 进程间通信</a>
+    <h1 class="article-title" itemprop="name">
+      Android 进程间通信
     </h1>
   
 
@@ -321,11 +199,122 @@
 </ul>
 <p><strong>本文主要探索的是<code>AIDL</code>和<code>Socket</code>两种实现方式</strong>，并在日常使用的基础上根据<code>AIDL</code>所生成的代码分析 <code>Binder</code>跨进程通信机制，感兴趣的童鞋可以看看。</p>
 <p>本文完整代码：<a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a></p>
-        
-          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/#more">more >></a>
-        
+<a id="more"></a>
+<h3 id="二、使用-AIDL和-Socket-进行通信"><a href="#二、使用-AIDL和-Socket-进行通信" class="headerlink" title="二、使用 AIDL和 Socket 进行通信"></a>二、使用 <code>AIDL</code>和 <code>Socket</code> 进行通信</h3><p>先来说说我们一会儿要实现的通信模型，大致如下图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-f53350287d6fac66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="需要实现的通信模型"></p>
+<p>然后看看目录结构：<br><img src="https://upload-images.jianshu.io/upload_images/5879616-dc67447c3d62653d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="文件路径"></p>
+<p>再看看<code>IMyAidlInterface.aidl</code>，这里在定义方法名称的时候需要注意的是<strong>方法不能同名，包需要手动导入</strong>，可能是因为<code>AIDL</code>文件在解析时不会区分参数类型，导致我在设定同名方法时一直编译错误，搞得我一直找其他问题，所以这点需要注意一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IMyAidlInterface.aidl</span></span><br><span class="line"><span class="keyword">package</span> com.project.horselai.bindprogressguarddemo;</span><br><span class="line"><span class="comment">// 需要手动导入的包</span></span><br><span class="line"><span class="keyword">import</span> com.project.horselai.bindprogressguarddemo.IMyAidlInterfaceCallback;</span><br><span class="line"><span class="keyword">import</span> com.project.horselai.bindprogressguarddemo.MyMessage;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IMyAidlInterface</span> </span>&#123; </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String msg)</span></span>; </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sendMessageObj</span><span class="params">(in MyMessage msg)</span></span>; </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getProcessId</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerCallback</span><span class="params">(IMyAidlInterfaceCallback callback)</span></span>; </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregisterCallback</span><span class="params">(IMyAidlInterfaceCallback callback)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后是<code>IMyAidlInterfaceCallback.aidl</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IMyAidlInterfaceCallback.aidl</span></span><br><span class="line"><span class="keyword">package</span> com.project.horselai.bindprogressguarddemo;</span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IMyAidlInterfaceCallback</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onValueCallback</span><span class="params">(<span class="keyword">int</span> value)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后是 <code>MyMessage.aidl</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MyMessage.aidl</span></span><br><span class="line"><span class="keyword">package</span> com.project.horselai.bindprogressguarddemo;</span><br><span class="line"></span><br><span class="line">parcelable MyMessage;</span><br></pre></td></tr></table></figure>
+
+<p>其他代码太长就不贴出来了，具体请查看 <a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a>。</p>
+<p>演示图如下，具体还是跑起来看看吧。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-b48b47ff8b940623.gif?imageMogr2/auto-orient/strip" alt="演示.gif"></p>
+<p> <img src="https://upload-images.jianshu.io/upload_images/5879616-5644504702a70c01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="日志输出信息"></p>
+<p>这里有个现象就是，<code>unbindService</code> 调用之后，<code>ServiceConnection</code> 并没有中断，因此，如果此时再次发送消息也是能够发送和接收到的。</p>
+<h3 id="三、从AIDL生成类源码角度理解Binder机制"><a href="#三、从AIDL生成类源码角度理解Binder机制" class="headerlink" title="三、从AIDL生成类源码角度理解Binder机制"></a>三、从<code>AIDL</code>生成类源码角度理解<code>Binder</code>机制</h3><p><strong>1. 先来点关于 IBinder 的理论知识</strong></p>
+<p>官方原文：<a href="https://developer.android.google.cn/reference/android/os/IBinder.html?hl=zh-cn" target="_blank" rel="noopener">IBinder</a></p>
+<p><code>IBinder</code>作为远程对象的基础接口，是为高性能执行跨进程和进程内调用设计的轻量级远程调用机制的核心部分，它描述了与远程对象交互时的抽象协议，使用时应该继承 <code>Binder</code>，而应直接实现 <code>IBinder</code>接口。</p>
+<p><code>IBinder</code>的关键 <code>API</code>是 <code>transact()</code>，它与 <code>Binder.onTranscat()</code>配对使用，当调用<code>transcat()</code>方法时会发送请求到<code>IBinder</code>对象，而接收到请求时是在<code>Binder.onTranscat()</code>中接收，<code>transcat()</code>是同步执行的，执行<code>transcat()</code>后<code>transcat()</code>会等待对方<code>Binder.onTranscat()</code>方法返回后才返回，这种行为在同一进程中执行时是必然的，而在不同进程间执行时，底层<code>IPC</code>机制也会确保具备与之相同的行为。</p>
+<p><code>transact()</code>方法发送的是<code>Parcel</code>类型的数据，<code>Parcel</code>是一种通用数据缓冲，它包含一些描述它所承载内容的元数据(<code>meta-data</code>)，这些元数据用于管理缓冲数据中的<code>IBinder</code>对象引用，因此这些引用可以被保存为缓冲数据而传递到其他进程。这种机制保证了<code>IBinder</code>能够被写入<code>Parcel</code>中并发送到其他进程，如果其他进程发送相同的<code>IBinder</code>引用回来给源进程，则说明源进程收到一个相同的<code>IBinder</code>对象，这种特性使<code>IBinder/Binder</code>对象能够作为进程间的唯一标识（作为服务器<code>token</code>或者其他目的）。</p>
+<p>系统会为每个运行的进程维护了一个事务线程池，线程池中的线程用于分发所有来自其他进程的<code>IPC</code>事务，例如，当进程<code>A</code>与进程<code>B</code>进行<code>IPC</code>时（此时<code>A</code>为发送进程），由于<code>A</code>调用<code>transact()</code>发送事务到进程<code>B</code>的缘故，<code>A</code>中被调用的线程会被阻塞在<code>transact()</code>，此时如果<code>B</code>进程中的可用线程池线程接收到了来自<code>A</code>的事务，就会调用目标对象（<code>A</code>进程）的<code>Binder.onTranscat()</code>，并回复一个<code>Parcel</code>作为应答。接收到来自<code>B</code>进程的应答后，在<code>A</code>进程中执行<code>transact()</code>的线程就会结束阻塞，从而继续执行其他逻辑。</p>
+<p><code>Binder</code>系统同样支持跨进程递归，例如，如果进程<code>A</code>执行一个事务到进程<code>B</code>，然后进程<code>B</code>处理接收到的事务时又执行了由进程<code>A</code>实现的<code>IBinder.transact()</code>，那么进程<code>A</code>中正在等待原事务执行结束的线程将用于执行由进程<code>B</code>调用的对象的<code>Binder.onTranscat()</code>应答。这种行为保证了递归机制在远程调用<code>Binder</code>对象和本地调用时行为一致。</p>
+<p><strong>通过以下三种方式可以确定远程对象是否可用：</strong></p>
+<ul>
+<li>当调用一个不存在进程的<code>IBinder.transact()</code>时会抛出<code>RemoteException</code>异常；</li>
+<li>调用<code>pingBinder()</code>返回<code>false</code>时表示远程进程已经不存在；</li>
+<li>使用<code>linkToDeath()</code>方法给<code>IBinder</code>注册一个<code>IBinder.DeathRecipient</code>，那么当其承载进程被杀死时会通过这个监听器通知；</li>
+</ul>
+<p><strong>2. AIDL 生成类源码分析</strong></p>
+<p>先来看看生成类的结构：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-c4f67681c4e902e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生成类的结构"></p>
+<p>其中<code>IMyAidlInterface</code>接口是我们定义<code>AIDL</code>接口的直接代码生成，而<code>IMyAidlInterface.Stub</code>则是实现<code>IMyAidlInterface</code>接口的抽象类，实现了<code>onTranscat()</code>方法，不过它并没有具体实现<code>IMyAidlInterface</code>的方法，而是将这部分的实现交给了<code>IMyAidlInterface.Stub.Proxy</code>。</p>
+<p>OK，我们来具体分析一下。首先定位到<code>Stub#asInterface</code>，可见它主要负责区分当前进行的是本地通信还是跨进程通信。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> com.project.horselai.bindprogressguarddemo.<span class="function">IMyAidlInterface <span class="title">asInterface</span><span class="params">(android.os.IBinder obj)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 查找本地是否存在这个 IBinder 对象</span></span><br><span class="line">    android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);</span><br><span class="line">    <span class="keyword">if</span> (((iin != <span class="keyword">null</span>) &amp;&amp; (iin <span class="keyword">instanceof</span> com.project.horselai.bindprogressguarddemo.IMyAidlInterface))) &#123;</span><br><span class="line">        <span class="comment">// 如果是本地通信，则稍后进行本地通信</span></span><br><span class="line">        <span class="keyword">return</span> ((com.project.horselai.bindprogressguarddemo.IMyAidlInterface) iin);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 否则，稍后使用这个对象进行远程通信</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> com.project.horselai.bindprogressguarddemo.IMyAidlInterface.Stub.Proxy(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着来看看<code>Stub#onTranscat</code>方法， 各参数作用如下</p>
+<ul>
+<li><strong>code：</strong> 标识需要执行的动作，是一个从<code>FIRST_CALL_TRANSACTION</code>到<code>LAST_CALL_TRANSACTION</code>之间的数字。</li>
+<li><strong>data：</strong> <code>transcat()</code>调用者发送过来的数据。</li>
+<li><strong>reply：</strong> 用于给<code>transcat()</code>调用者写入应答数据。</li>
+<li><strong>flags：</strong> 如果是 <code>0</code>，代表是一个普通<code>RPC</code>，如果是<code>FLAG_ONEWAY</code>则代表是一个<code>one-way</code>类型的<code>RPC</code>。</li>
+<li><strong>return：</strong> 返回<code>true</code>代表请求成功了，返回<code>false</code>则表示你没有明白事务代码（<code>code</code>）。</li>
+</ul>
+<p>基于前面的理论知识，我们已经知道进程<code>A</code>中的<code>onTransact()</code>会被进程<code>B</code>调用，用于远程回调应答数据，下面通过两个标志性的方法解释在<code>onTransact()</code>中都做了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> android.os.RemoteException </span>&#123;</span><br><span class="line">    java.lang.String descriptor = DESCRIPTOR;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">        <span class="comment">// 对于远程写请求</span></span><br><span class="line">        <span class="keyword">case</span> TRANSACTION_sendMessage: &#123;</span><br><span class="line">            data.enforceInterface(descriptor);</span><br><span class="line">            java.lang.String _arg0;</span><br><span class="line">            <span class="comment">// 1. 从进程A的远程请求包中读取请求数据</span></span><br><span class="line">            _arg0 = data.readString();</span><br><span class="line">            <span class="comment">// 2. 执行进程B中的sendMessage方法写入来自进程A的数据</span></span><br><span class="line">            <span class="keyword">this</span>.sendMessage(_arg0);</span><br><span class="line">            reply.writeNoException();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 对于远程读请求</span></span><br><span class="line">        <span class="keyword">case</span> TRANSACTION_getProcessId: &#123;</span><br><span class="line">            data.enforceInterface(descriptor);</span><br><span class="line">            <span class="comment">// 1. 执行进程B中的getProcessId() 读取需要作为响应数据的数据</span></span><br><span class="line">            <span class="keyword">int</span> _result = <span class="keyword">this</span>.getProcessId();</span><br><span class="line">            <span class="comment">// 2. 将读取到的响应数据写入到进程A的应答中</span></span><br><span class="line">            reply.writeNoException();</span><br><span class="line">            reply.writeInt(_result);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可能你会对上面的<code>this.sendMessage(_arg0)</code>和<code>this.getProcessId()</code>有所疑问，比如，为什么在<code>TRANSACTION_sendMessage</code>中还要执行<code>this.sendMessage(_arg0)</code>，这不就死循环了吗？ 不会的，为啥呢，因为<code>TRANSACTION_sendMessage</code>判断的是来自进程<code>A</code>的方法类型码，而在解析了来自进程<code>A</code>的请求参数<code>data</code>后会调用进程<code>B</code>自身的<code>sendMessage(_arg0)</code>方法将数据保存到自己的存储内存中，而它的<code>sendMessage(_arg0)</code>是有我们自己实现的，如下是我们在进程<code>B</code>中的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IMyAidlInterface.Stub myAidlInterface = <span class="keyword">new</span> IMyAidlInterface.Stub() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String msg)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">"sendMessage: "</span> + msg);</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getProcessId</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Process.myPid();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>到这是不是就很好理解了。</p>
+<p>下面通过<code>Proxy#sendMessage</code>和<code>Proxy#getProcessId</code>两个与上面对应的方法来解释作为客户端的进程<code>A</code>是如何给远程作为服务端的<code>B</code>进程发送请求的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(java.lang.String msg)</span> <span class="keyword">throws</span> android.os.RemoteException </span>&#123;</span><br><span class="line">    android.os.Parcel _data = android.os.Parcel.obtain(); <span class="comment">// 请求参数</span></span><br><span class="line">    android.os.Parcel _reply = android.os.Parcel.obtain(); <span class="comment">// 响应数据</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 封装远程请求参数</span></span><br><span class="line">        _data.writeInterfaceToken(DESCRIPTOR);</span><br><span class="line">        _data.writeString(msg);</span><br><span class="line">        <span class="comment">// 2. 通过Binder执行远程请求，最终响应数据会封装在_reply</span></span><br><span class="line">        mRemote.transact(Stub.TRANSACTION_sendMessage, _data, _reply, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// 3. 没有需要返回数据则仅读取异常</span></span><br><span class="line">        _reply.readException();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        _reply.recycle();</span><br><span class="line">        _data.recycle();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getProcessId</span><span class="params">()</span> <span class="keyword">throws</span> android.os.RemoteException </span>&#123;</span><br><span class="line">    android.os.Parcel _data = android.os.Parcel.obtain(); <span class="comment">// 请求参数</span></span><br><span class="line">    android.os.Parcel _reply = android.os.Parcel.obtain(); <span class="comment">// 响应数据</span></span><br><span class="line">    <span class="keyword">int</span> _result;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 没有参数，则仅写入标识</span></span><br><span class="line">        _data.writeInterfaceToken(DESCRIPTOR);</span><br><span class="line">        <span class="comment">// 2. 通过Binder执行远程请求，最终响应数据会封装在_reply</span></span><br><span class="line">        mRemote.transact(Stub.TRANSACTION_getProcessId, _data, _reply, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// 3. transact阻塞结束后读取响应数据</span></span><br><span class="line">        _reply.readException();</span><br><span class="line">        _result = _reply.readInt();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        _reply.recycle();</span><br><span class="line">        _data.recycle();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可见，实际上<code>_reply</code>一直使用的都是同一个，由进程<code>A</code>创建，发送给<code>B</code>进程，进程<code>B</code>会将处理好的响应数据写入到<code>_reply</code>中，并最终通过<code>onTranscat</code>方法回调给进程<code>A</code>，这样就完成了一个<code>RPC</code>。</p>
+<p>总的来说，整个过程的执行流程如下：<br><img src="https://upload-images.jianshu.io/upload_images/5879616-c1e546e703174f31.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="使用Binder进行IPC"></p>
+<h3 id="四、Messager使用与源码分析"><a href="#四、Messager使用与源码分析" class="headerlink" title="四、Messager使用与源码分析"></a>四、<code>Messager</code>使用与源码分析</h3><p><strong>1. 使用</strong></p>
+<p>在<code>Service</code>进程中如下使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessengerRemoteService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"MessengerRemoteService"</span>;</span><br><span class="line">    <span class="keyword">private</span> Messenger mMessenger;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mMessenger.getBinder();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 使用 Messenger 进行进程间通信</span></span><br><span class="line">        mMessenger = <span class="keyword">new</span> Messenger(<span class="keyword">new</span> Handler(<span class="keyword">new</span> Handler.Callback() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"handleMessage: "</span> + msg);</span><br><span class="line">                Log.i(TAG, <span class="string">"handleMessage data: "</span> + msg.getData().get(<span class="string">"msg"</span>));</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>Activity</code>中如下建立服务连接：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// for Messenger</span></span><br><span class="line"><span class="keyword">private</span> Messenger mMessenger;</span><br><span class="line">ServiceConnection mServiceConnection3 = <span class="keyword">new</span> ServiceConnection() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">"onServiceConnected3: "</span>);</span><br><span class="line">        mMessenger = <span class="keyword">new</span> Messenger(service);</span><br><span class="line">        btnBindRemote.setEnabled(<span class="keyword">false</span>);</span><br><span class="line">        mIsBond = <span class="keyword">true</span>;</span><br><span class="line">        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"service bond 3!"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">"onServiceDisconnected 3: "</span>);</span><br><span class="line">        mIsBond = <span class="keyword">false</span>;</span><br><span class="line">        btnBindRemote.setEnabled(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>绑定后如下发送信息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mMessenger != <span class="keyword">null</span>)&#123;</span><br><span class="line">    Message message = <span class="keyword">new</span> Message();</span><br><span class="line">    Bundle bundle = <span class="keyword">new</span> Bundle();</span><br><span class="line">    bundle.putString(<span class="string">"msg"</span>,<span class="string">"message  clicked from Main .."</span>);</span><br><span class="line">    message.what = <span class="number">122</span>;</span><br><span class="line">    message.setData(bundle);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        mMessenger.send( message);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>日志输出如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-560c9a9e1d25a1c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="日志输出"></p>
+<p>基于上面的使用，整个流程下来你会发现<code>Messenger</code>的通信是单向的，如果想要双向的话，那么需要在作为客户端的进程<code>A</code>上也创建一个<code>Messenger</code>和<code>Handler</code>，然后在<code>B</code>进程中发送响应消息。</p>
+<p>为了能够进行双向通信，我们可以对上面代码进行如下修改，其中<code>MessengerRemoteService</code>中的<code>Messenger</code>可以这么修改：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mMessenger = <span class="keyword">new</span> Messenger(<span class="keyword">new</span> Handler(<span class="keyword">new</span> Handler.Callback() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">"handleMessage: "</span> + msg);</span><br><span class="line">        Log.i(TAG, <span class="string">"handleMessage data: "</span> + msg.getData().get(<span class="string">"msg"</span>));</span><br><span class="line"></span><br><span class="line">        Message message = Message.obtain();</span><br><span class="line">        message.replyTo = mMessenger;</span><br><span class="line">        Bundle bundle = <span class="keyword">new</span> Bundle();</span><br><span class="line">        bundle.putString(<span class="string">"msg"</span>, <span class="string">"MSG from MessengerRemoteService.."</span>);</span><br><span class="line">        message.setData(bundle);</span><br><span class="line">        message.what = <span class="number">124</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 注意这里</span></span><br><span class="line">            msg.replyTo.send(message);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<p>注意到上面的<code>msg.replyTo.send(message)</code>，其中<code>msg.replyTo</code>是一个代表发送这个消息的<code>Messenger</code>。在<code>Activity</code>中可以这么改：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// onCreate中</span></span><br><span class="line">mClientMessenger = <span class="keyword">new</span> Messenger(mHandler);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">Handler mHandler = <span class="keyword">new</span> Handler(Looper.getMainLooper(), <span class="keyword">new</span> Handler.Callback() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (msg.what == <span class="number">2</span>) &#123;</span><br><span class="line">            Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">""</span> + msg.obj, Toast.LENGTH_SHORT).show();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (msg.what == <span class="number">124</span>)&#123;</span><br><span class="line">            Toast.makeText(MainActivity.<span class="keyword">this</span>,   msg.getData().getString(<span class="string">"msg"</span>), Toast.LENGTH_SHORT).show();</span><br><span class="line">            Log.i(TAG, <span class="string">"handleMessage: "</span> + msg.getData().getString(<span class="string">"msg"</span>));</span><br><span class="line">            Log.i(TAG, <span class="string">"handleMessage: "</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        textView.setText(String.valueOf(msg.obj));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>最后<code>Activity</code>收到消息时会弹出收到的消息，如下图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-d6b681bc8d4ef7da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="收到MessengerRemoteService消息"></p>
+<p>整个双向通信的流程如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5879616-f120f2f156a75086.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Messenger双向通信"></p>
+<p><strong>2. Messenger 实现原理</strong></p>
+<p>Messenger底层仅仅是简单地包裹了一下<code>Binder</code>，具体来说就是也使用的<code>AIDL</code>，因此它不会影响到进程的生命周期，不过当进程销毁时，连接也会中断。</p>
+<p>下面来简要看一下它的部分源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Messenger</span> <span class="keyword">implements</span> <span class="title">Parcelable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> IMessenger mTarget;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Messenger</span><span class="params">(Handler target)</span> </span>&#123;</span><br><span class="line">        mTarget = target.getIMessenger();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Messenger</span><span class="params">(IBinder target)</span> </span>&#123;</span><br><span class="line">        mTarget = IMessenger.Stub.asInterface(target);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>IMessenger</code>是个<code>AIDL</code>接口，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> android.os; </span><br><span class="line"><span class="keyword">import</span> android.os.Message; </span><br><span class="line"><span class="comment">/** <span class="doctag">@hide</span> */</span></span><br><span class="line">oneway <span class="class"><span class="keyword">interface</span> <span class="title">IMessenger</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">send</span><span class="params">(in Message msg)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了前面的知识基础，这玩意儿就很好理解了。</p>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><p>本文主要描述了<code>Android</code>进程间通信中的<code>AIDL</code>和<code>Socket</code>两种方式，文中没有对<code>Socket</code>方式做过多描述和分析，是因为使用<code>Socket</code>通信是比较基础的事情，并且它的实现过程相对容易理解，因此就一笔带过了，具体实现源码请查看 <a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a>。文中着重从<code>AIDL</code>生成源码角度分析了<code>Binder</code>的运行机制，并简单介绍了<code>Messenger</code>的使用及其实现。</p>
+<p>OK，水平有限，欢迎理性指正。</p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -334,16 +323,79 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://horselai.github.io/2019/06/02/Android-进程间通信/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2019/06/02/OkHttp-源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          OkHttp 源码分析
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -363,8 +415,14 @@
 
 
 
+  
+  
+  
 
   
+
+  
+
   
 
 
@@ -387,8 +445,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
