@@ -156,78 +156,32 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Android 进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Retrofit源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/Retrofit源码分析/">Retrofit 源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/Retrofit源码分析/" class="archive-article-date">
+  	<time datetime="2019-06-01T17:53:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<hr>
-<h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>关于<code>Android</code>中的进程间通信，我们知道大概可以通过以下方式进行：</p>
-<ul>
-<li><code>Bundle</code>：四大组件间通信</li>
-<li><code>File</code>：文件共享</li>
-<li><code>ContentProvider</code>：应用间数据共享</li>
-<li><code>AIDL</code>：<code>Binder</code>机制</li>
-<li><code>Messager</code>：基于<code>AIDL</code>、<code>Handler</code>实现</li>
-<li><code>Socket</code>：建立<code>C/S</code>通信模型</li>
-</ul>
-<p><strong>本文主要探索的是<code>AIDL</code>和<code>Socket</code>两种实现方式</strong>，并在日常使用的基础上根据<code>AIDL</code>所生成的代码分析 <code>Binder</code>跨进程通信机制，感兴趣的童鞋可以看看。</p>
-<p>本文完整代码：<a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a></p>
-        
-          <a class="article-more-a" href="/2019/06/01/Android 进程间通信/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/01/Android 进程间通信/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Retrofit源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p><code>Retrofit</code>和 <code>OKHttp</code>同为 <code>square</code> 出品的网络请求相关库，不同的是 <code>Retrofit</code>本身不进行网络请求，而是作为一个协调者，协调其他组件共同处理网络请求。用官网描述来说就是：<code>Retrofit</code>是可插拔的，它允许不同的执行机制和类库用于执行<code>HTTP</code>请求、允许不同序列化的类库进行<code>java</code>实体类与<code>HTTP</code>响应数据之间转换。</p>
+<h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p><code>Retrofit</code>和 <code>OKHttp</code>同为 <code>square</code> 出品的网络请求相关库，不同的是 <code>Retrofit</code>本身不进行网络请求，而是作为一个协调者，协调其他组件共同处理网络请求。用官网描述来说就是：<code>Retrofit</code>是可插拔的，它允许不同的执行机制和类库用于执行<code>HTTP</code>请求、允许不同序列化的类库进行<code>java</code>实体类与<code>HTTP</code>响应数据之间转换。</p>
 <p><code>Retrofit</code>的网络请求部分默认基于<code>OkHttp</code>，关于<code>OkHttp</code>，鄙人写过 <a href="https://www.jianshu.com/p/ac5bc7698553" target="_blank" rel="noopener"><code>OkHttp源码分析</code></a>一文，感兴趣的童鞋可以看看。</p>
 <p>本文纯属基于个人理解，源码解析不限于执行流程，因此受限于知识水平，有些地方可能依然没有理解到位，还请发现问题的童鞋理性指出。</p>
         
-          <a class="article-more-a" href="/2019/06/01/Retrofit源码分析/#more">more >></a>
+          <a class="article-more-a" href="/2019/06/02/Retrofit源码分析/#more">more >></a>
         
       
 
@@ -240,7 +194,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/01/Retrofit源码分析/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/02/Retrofit源码分析/">展开全文 >></a>
         </p>
       
 
@@ -273,13 +227,29 @@
     <article id="post-OkHttp源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/OkHttp源码分析/">OkHttp 源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/OkHttp源码分析/" class="archive-article-date">
+  	<time datetime="2019-06-01T17:53:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>在我们日常开发中，<code>OkHttp</code>可谓是最常用的开源库之一，目前就连<code>Android API</code>中的网络请求接口都是用的<code>OkHttp</code>，好吧，真的很强。</p>
+        <hr>
+<h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>在我们日常开发中，<code>OkHttp</code>可谓是最常用的开源库之一，目前就连<code>Android API</code>中的网络请求接口都是用的<code>OkHttp</code>，好吧，真的很强。</p>
 <p>在上学期间我也曾阅读和分析过<code>OkHttp</code>的源码，并记录在笔记中，不过现在再去翻看的时候发现当时很多地方并没有正确理解，因此也趁着这个过年假期重新阅读和整理一遍，感兴趣的童鞋可以观摩一下。</p>
 <p>本文纯属基于个人理解，因此受限于知识水平，有些地方可能依然没有理解到位，还请发现问题的童鞋理性指出。</p>
         
-          <a class="article-more-a" href="/2019/06/01/OkHttp源码分析/#more">more >></a>
+          <a class="article-more-a" href="/2019/06/02/OkHttp源码分析/#more">more >></a>
         
       
 
@@ -292,7 +262,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/01/OkHttp源码分析/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/02/OkHttp源码分析/">展开全文 >></a>
         </p>
       
 
