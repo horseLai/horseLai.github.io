@@ -17,7 +17,7 @@
 <meta property="og:description" content="一、引言关于 LruCache 的总结，因为工作推迟了好长一段时间，因此趁现在有点空赶紧记录下来。 相信很多童鞋也跟我一样，最初都是使用 LruCache 作为 ImageLoader 图片缓存中的一环，但是使用的过程中，我们并不关心它这个“最近使用原则”到底源码怎么实现的，而仅仅在意它具备这样的特性。因此，本文要做的工作如下：  从基本使用解释”最近使用“这一特性； 结合源码分析”最近使用“的实">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-ef62973bf4cd5eb9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-06-02T08:47:34.593Z">
+<meta property="og:updated_time" content="2019-06-02T08:53:51.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LruCache 与 LinkedHashMap">
 <meta name="twitter:description" content="一、引言关于 LruCache 的总结，因为工作推迟了好长一段时间，因此趁现在有点空赶紧记录下来。 相信很多童鞋也跟我一样，最初都是使用 LruCache 作为 ImageLoader 图片缓存中的一环，但是使用的过程中，我们并不关心它这个“最近使用原则”到底源码怎么实现的，而仅仅在意它具备这样的特性。因此，本文要做的工作如下：  从基本使用解释”最近使用“这一特性； 结合源码分析”最近使用“的实">
@@ -177,6 +177,7 @@
 <li>从基本使用解释”最近使用“这一特性；</li>
 <li>结合源码分析”最近使用“的实现；</li>
 </ul>
+<a id="more"></a>
 <h3 id="二、从使用到源码"><a href="#二、从使用到源码" class="headerlink" title="二、从使用到源码"></a>二、从使用到源码</h3><p>首先来说说“最近使用”的特点：<strong>假设头部为最近的地方，而尾部是最远的地方，那么最先插入的元素会放到尾部，而最后插入的元素会被放到头部，并且如果我们使用了其中的某个元素，那么这个元素会被放到头部；如果容量到达了限定值，那么再次插入元素的时候就会删除掉尾部使用频率最低的元素以插入新元素</strong>。 这一特性可解释如下图：</p>
 <p><img src="https://upload-images.jianshu.io/upload_images/5879616-ef62973bf4cd5eb9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="LRU使用特性"></p>
 <p>通常我们会这样使用 <code>LruCache</code>，假定限制内存大小为 <code>5M</code>，那么可以这么做：</p>
