@@ -16,10 +16,12 @@
 <meta property="og:site_name" content="horseLai">
 <meta property="og:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-06-02T09:33:21.321Z">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-06-02T09:36:37.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SparseArray与ArrayMap源码分析与总结">
 <meta name="twitter:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="horseLai" type="application/atom+xml">
   
@@ -187,35 +189,31 @@
 </li>
 </ul>
 <h3 id="SparseArray-综述"><a href="#SparseArray-综述" class="headerlink" title="SparseArray 综述"></a>SparseArray 综述</h3><ul>
-<li><p><strong>特点</strong>：使用<code>int</code>数组作为<code>map</code>的<code>key</code>容器，<code>Object</code>数组作为<code>value</code>容器，使用索引对应的形式组成<code>key-value</code>这使得<code>SparseArray</code><strong>可以不按照像数组索引那样的顺序来添加元素</strong>。可看成增强型的数组或者<code>ArrayList</code>。</p>
+<li><strong>特点</strong>：使用<code>int</code>数组作为<code>map</code>的<code>key</code>容器，<code>Object</code>数组作为<code>value</code>容器，使用索引对应的形式组成<code>key-value</code>这使得<code>SparseArray</code><strong>可以不按照像数组索引那样的顺序来添加元素</strong>。可看成增强型的数组或者<code>ArrayList</code>。</li>
+<li><strong>查找</strong>：使用<strong>二分查找法</strong>查找<code>key</code>在数组中的位置,然后根据这个数组位置得到对应<code>value</code>数组中的<code>value</code>值。</li>
+<li><strong>优劣</strong>：相对于<code>HashMap</code>，合理使用<code>SparseArray</code>可以节省大量创建<code>Entry</code>节点时产生的内存，提高性能，但是因为基于数组，插入和删除操作需要挪动数组，非常消耗性能,而当<strong>数据有几百条时，性能会比HashMap低近50%，因此<code>SparseArray</code>适用于数据量很小的场景</strong>。</li>
+<li><strong>使用场景举例</strong>：<ul>
+<li><strong>通过<code>View id</code>来映射<code>View</code>对象实例</strong>。  一个非常现实的场景是，当我们使用<code>RecyclerView</code>时，我们可能需要创建若干个<code>ViewHolder</code>，特别是如果一个列表包含若干中布局类型的时候，而如果我们不适用类似于<code>ButterKnife</code>或<code>DataBinding</code>这类工具的话，那么我们需要对每个<code>控件</code>进行<code>findViewById</code>，这是件很糟心的事情，那么我们可以怎么简化呢？欸，这种情况可以使用<code>SparseArray</code>来缓存一下我们的<code>View</code>（实际上<code>ArrayMap</code>、<code>HashMap</code>等也可以）,比方说以下示例代码：</li>
+</ul>
 </li>
-<li><p><strong>查找</strong>：使用<strong>二分查找法</strong>查找<code>key</code>在数组中的位置,然后根据这个数组位置得到对应<code>value</code>数组中的<code>value</code>值。</p>
-</li>
-<li><p><strong>优劣</strong>：相对于<code>HashMap</code>，合理使用<code>SparseArray</code>可以节省大量创建<code>Entry</code>节点时产生的内存，提高性能，但是因为基于数组，插入和删除操作需要挪动数组，非常消耗性能,而当<strong>数据有几百条时，性能会比HashMap低近50%，因此<code>SparseArray</code>适用于数据量很小的场景</strong>。</p>
-</li>
-<li><p><strong>使用场景举例</strong>：</p>
-<ul>
-<li><p><strong>通过<code>View id</code>来映射<code>View</code>对象实例</strong>。  一个非常现实的场景是，当我们使用<code>RecyclerView</code>时，我们可能需要创建若干个<code>ViewHolder</code>，特别是如果一个列表包含若干中布局类型的时候，而如果我们不适用类似于<code>ButterKnife</code>或<code>DataBinding</code>这类工具的话，那么我们需要对每个<code>控件</code>进行<code>findViewById</code>，这是件很糟心的事情，那么我们可以怎么简化呢？欸，这种情况可以使用<code>SparseArray</code>来缓存一下我们的<code>View</code>（实际上<code>ArrayMap</code>、<code>HashMap</code>等也可以）,比方说以下示例代码：</p>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SparseArray&lt;View&gt; mViewCache;</span><br><span class="line">    <span class="keyword">private</span> Object tag;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CommViewHolder</span><span class="params">(@NonNull View itemView)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(itemView);</span><br><span class="line">        mViewCache = <span class="keyword">new</span> SparseArray&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T extends View&gt; <span class="function">T <span class="title">getView</span><span class="params">(@IdRes <span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        T t = (T) mViewCache.get(id);</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123;</span><br><span class="line">            t = itemView.findViewById(id);</span><br><span class="line">            mViewCache.put(id, t);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">releaseCache</span><span class="params">()</span></span>&#123;</span><br><span class="line">        mViewCache.clear();</span><br><span class="line">        mViewCache = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTag</span><span class="params">(Object tag)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tag = tag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getTag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>通过上面这个通用的<code>ViewHolder</code>，我们就可以应用于任意的布局类型，而不用每个都去写一个对应的<code>ViewHolder</code>了，可以说很方便了。</p>
-</li>
-</ul>
-</li>
-</ul>
-<hr>
+<pre><code>通过上面这个通用的`ViewHolder`，我们就可以应用于任意的布局类型，而不用每个都去写一个对应的`ViewHolder`了，可以说很方便了。</code></pre><hr>
 <h3 id="ArrayMap"><a href="#ArrayMap" class="headerlink" title="ArrayMap"></a>ArrayMap</h3><ul>
-<li><p>通过阅读<code>ArrayMap</code>的源码可以发现，它和<code>SparseArray</code>简直就是亲生兄弟啊，不同点就是，<code>ArrayMap</code>具备完整的<code>Map</code>特性，因为继承自<code>Map</code>，并且具备哈希表的相关特性。</p>
+<li>通过阅读<code>ArrayMap</code>的源码可以发现，它和<code>SparseArray</code>简直就是亲生兄弟啊，不同点就是，<code>ArrayMap</code>具备完整的<code>Map</code>特性，因为继承自<code>Map</code>，并且具备哈希表的相关特性。</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> mIdentityHashCode;</span><br><span class="line">    <span class="keyword">int</span>[] mHashes; <span class="comment">// 存储哈希值</span></span><br><span class="line">    Object[] mArray; <span class="comment">// 存储元素</span></span><br><span class="line">    <span class="keyword">int</span> mSize;</span><br><span class="line">    MapCollections&lt;K, V&gt; mCollections; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>我们先来看看查找索引<code>index</code>源码，可以看到想要得到<code>index</code>，需要先使用二分查找法去<code>mHashs</code>数组中找出这个<code>hash</code>在数组中的位置，而这个位置就是<code>index</code>。这里就必然存在几种情况，具体可以看下面的注释。</p>
+
+<ul>
+<li>我们先来看看查找索引<code>index</code>源码，可以看到想要得到<code>index</code>，需要先使用二分查找法去<code>mHashs</code>数组中找出这个<code>hash</code>在数组中的位置，而这个位置就是<code>index</code>。这里就必然存在几种情况，具体可以看下面的注释。</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object key, <span class="keyword">int</span> hash)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> N = mSize;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用二分查找算法搜索元素位置</span></span><br><span class="line">    <span class="keyword">int</span> index = binarySearchHashes(mHashes, N, hash);</span><br><span class="line">    <span class="comment">// 1. 不存在相关该hash </span></span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> index;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 存在该hash，且对应位置上有对应key</span></span><br><span class="line">    <span class="keyword">if</span> (key.equals(mArray[index&lt;&lt;<span class="number">1</span>])) &#123;</span><br><span class="line">        <span class="keyword">return</span> index;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="comment">// 3. 存在该hash，但是对应位置上无对应key, 也就是说冲突了</span></span><br><span class="line">    <span class="comment">// 那么先搜索后半部分，之所以分成两半来查找是为了缩小查询范围，提升搜索速度</span></span><br><span class="line">    <span class="comment">// 这实际实在赌博，赌目标值在数组后半段 ，最终能否提升速度就看是不是在数组后半段了</span></span><br><span class="line">    <span class="keyword">int</span> end;</span><br><span class="line">    <span class="keyword">for</span> (end = index + <span class="number">1</span>; end &lt; N &amp;&amp; mHashes[end] == hash; end++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key.equals(mArray[end &lt;&lt; <span class="number">1</span>])) <span class="keyword">return</span> end;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 再搜索前半部分</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = index - <span class="number">1</span>; i &gt;= <span class="number">0</span> &amp;&amp; mHashes[i] == hash; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key.equals(mArray[i &lt;&lt; <span class="number">1</span>])) <span class="keyword">return</span> i;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="comment">// 对应key实在没找到，说明确实是冲突了，那么返回个mHashes数组大小的取反值（负数）</span></span><br><span class="line">    <span class="keyword">return</span> ~end;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-</li>
-</ul>
 <ul>
-<li><p>有了上面的分析过程，我们已经了解了<code>ArrayMap</code>的<code>index</code>是如何决定的了，那么通过<code>put</code>方法就可以比较直观地看出<code>ArrayMap</code>的存储过程了，<strong>首先会计算我们给定<code>key</code>的哈希值，然后通过这个哈希值去查找<code>index</code>，如果在这个<code>index</code>上已经元素，那么替换这个元素，如果不存在，那么将数据存入数组中；如果存在冲突，则校检一下数组容量（看看需不需要扩容），然后存入数组</strong>。</p>
+<li>有了上面的分析过程，我们已经了解了<code>ArrayMap</code>的<code>index</code>是如何决定的了，那么通过<code>put</code>方法就可以比较直观地看出<code>ArrayMap</code>的存储过程了，<strong>首先会计算我们给定<code>key</code>的哈希值，然后通过这个哈希值去查找<code>index</code>，如果在这个<code>index</code>上已经元素，那么替换这个元素，如果不存在，那么将数据存入数组中；如果存在冲突，则校检一下数组容量（看看需不需要扩容），然后存入数组</strong>。</li>
+</ul>
 <pre><code class="java"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>{
     <span class="keyword">final</span> <span class="keyword">int</span> osize = mSize;
     <span class="keyword">final</span> <span class="keyword">int</span> hash;
@@ -265,39 +263,26 @@
     mArray[(index&lt;&lt;<span class="number">1</span>)+<span class="number">1</span>] = value;
     mSize++;
     <span class="keyword">return</span> <span class="keyword">null</span>;
-}
-</code></pre>
+}</code></pre>
+<p>上面有个比较新颖的地方，就是它把<code>key</code>和<code>value</code>都存到了一个数组中去了，也就是<code>mArray</code>数组，<code>key</code>在前,<code>value</code>在后，同 <code>index</code>的关系如下图： </p>
+<p> <img src="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mArray数组的存储结构"></p>
+<h3 id="ArrayMap-综述"><a href="#ArrayMap-综述" class="headerlink" title="ArrayMap 综述"></a>ArrayMap 综述</h3><ul>
+<li><p><strong>特点</strong></p>
+<ul>
+<li>实现了<code>Map</code>接口，并使用<code>int[]</code>数来存储<code>key</code>的<code>hash</code>值，数组的索引用作<code>index</code>，而使用<code>Object[]</code>数组来存储<code>key&lt;-&gt;value</code> ，这还是比较新颖的 。</li>
+<li>使用二分查找查找<code>hash</code>值在<code>key</code>数组中的位置，然后根据这个位置得到<code>value</code>数组中对应位置的元素。</li>
+<li>和<code>SparseArray</code>类似，当<strong>数据有几百条时，性能会比HashMap低50%，因此<code>ArrayMap</code>适用于数据量很小的场景</strong></li>
+</ul>
+</li>
+<li><p><strong>ArrayMap和HashMap的区别？</strong></p>
+<pre><code>- **ArrayMap的存在是为了解决HashMap占用内存大的问题，它内部使用了一个int数组用来存储元素的hashcode，使用了一个Object数组用来存储元素**，两者根据索引对应形成key-value结构，这样就不用像HashMap那样需要额外的创建Entry对象来存储，减少了内存占用。但是在数据量比较大时，ArrayMap的性能就会远低于HashMap，因为 **ArrayMap基于二分查找算法来查找元素的**，并且数组的插入操作如果不是末尾的话需要挪动数组元素，效率较低。</code></pre><ul>
+<li><strong>而HashMap内部基于数组+单向链表+红黑树实现，也是key-value结构</strong>， 正如刚才提到的，HashMap每put一个元素都需要创建一个Entry来存放元素，导致它的内存占用会比较大，但是在大数据量的时候，因为HashMap中当出现冲突时，冲突的数据量大于8，就会从单向链表转换成红黑树，<strong>而红黑树的插入、删除、查找的时间复杂度为O(logn),相对于ArrayMap的数组而言在插入和删除操作上要快不少</strong>，所以数据量上百的情况下，使用HashMap会有更高的效率。</li>
+</ul>
+</li>
+<li><p><strong>如何解决冲突问题？</strong> 在<code>ArrayMap</code>中，假设存在冲突的话，并不会像<code>HashMap</code>那样使用单向链表或红黑树来保留这些冲突的元素，而是全部<code>key</code>、<code>value</code>都存储到一个数组当中，然后查找的话通过二分查找进行，这也就是当数据量大时不宜用<code>ArrayMap</code>的原因了。</p>
 </li>
 </ul>
-<pre><code>    上面有个比较新颖的地方，就是它把`key`和`value`都存到了一个数组中去了，也就是`mArray`数组，`key`在前,`value`在后，同 `index`的关系如下图： 
 
- ![mArray数组的存储结构](https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-
-
-### ArrayMap 综述
-
-- **特点**
-    -  实现了`Map`接口，并使用`int[]`数来存储`key`的`hash`值，数组的索引用作`index`，而使用`Object[]`数组来存储`key&lt;-&gt;value` ，这还是比较新颖的 。
-    -  使用二分查找查找`hash`值在`key`数组中的位置，然后根据这个位置得到`value`数组中对应位置的元素。
-    -  和`SparseArray`类似，当**数据有几百条时，性能会比HashMap低50%，因此`ArrayMap`适用于数据量很小的场景**
-
-- **ArrayMap和HashMap的区别？**
-      - **ArrayMap的存在是为了解决HashMap占用内存大的问题，它内部使用了一个int数组用来存储元素的hashcode，使用了一个Object数组用来存储元素**，两者根据索引对应形成key-value结构，这样就不用像HashMap那样需要额外的创建Entry对象来存储，减少了内存占用。但是在数据量比较大时，ArrayMap的性能就会远低于HashMap，因为 **ArrayMap基于二分查找算法来查找元素的**，并且数组的插入操作如果不是末尾的话需要挪动数组元素，效率较低。
-    - **而HashMap内部基于数组+单向链表+红黑树实现，也是key-value结构**， 正如刚才提到的，HashMap每put一个元素都需要创建一个Entry来存放元素，导致它的内存占用会比较大，但是在大数据量的时候，因为HashMap中当出现冲突时，冲突的数据量大于8，就会从单向链表转换成红黑树，**而红黑树的插入、删除、查找的时间复杂度为O(logn),相对于ArrayMap的数组而言在插入和删除操作上要快不少**，所以数据量上百的情况下，使用HashMap会有更高的效率。
-
-- **如何解决冲突问题？** 在`ArrayMap`中，假设存在冲突的话，并不会像`HashMap`那样使用单向链表或红黑树来保留这些冲突的元素，而是全部`key`、`value`都存储到一个数组当中，然后查找的话通过二分查找进行，这也就是当数据量大时不宜用`ArrayMap`的原因了。
-
-
-
-
-
-
-
-
-
-
-</code></pre>
       
 
       
@@ -418,7 +403,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SparseArray"><span class="toc-number">2.</span> <span class="toc-text">SparseArray</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SparseArray-综述"><span class="toc-number">3.</span> <span class="toc-text">SparseArray 综述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ArrayMap"><span class="toc-number">4.</span> <span class="toc-text">ArrayMap</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SparseArray"><span class="toc-number">2.</span> <span class="toc-text">SparseArray</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SparseArray-综述"><span class="toc-number">3.</span> <span class="toc-text">SparseArray 综述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ArrayMap"><span class="toc-number">4.</span> <span class="toc-text">ArrayMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ArrayMap-综述"><span class="toc-number">5.</span> <span class="toc-text">ArrayMap 综述</span></a></li></ol>
                     </div>
                 </span>
             </div>

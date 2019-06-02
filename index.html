@@ -539,87 +539,6 @@
 
 
   
-    <article id="post-数据绑定适配器（Binding-Adapters）[-翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">数据绑定适配器（Binding-Adapters）[翻译]</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>官方英文原文：<a href="https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters" target="_blank" rel="noopener">https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters</a></p>
-<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p><code>Binding Adapter</code>负责调用合适的框架调用来设置值，例如通过<code>setText</code>设置属性值、通过<code>setOnclickListener</code>设置事件监听器等。</p>
-<p><code>Databinging</code>类库允许通过调用特定的方法设置值、允许自定义绑定逻辑、允许指定适配器的返回类型。</p>
-<h3 id="二、设置属性值"><a href="#二、设置属性值" class="headerlink" title="二、设置属性值"></a>二、设置属性值</h3><p>每当一个已经绑定的值发生改变时，生成的绑定类都必须通过<code>View</code>的数据绑定表达式来设置值。也可以通过<code>Databinding</code>类库自动决定需要的方法，或者显式声明所需方法、或者提供自定义逻辑的方法。</p>
-<p><strong>1. 自动选择方法</strong></p>
-<p> 假设存在一个属性<code>example</code>，那么类库会自动去查找可以接受对应参数的<code>setExample(arg)</code>方法，并不需要考虑属性的命名空间，搜索方法时只会用到属性的名称和类型。<br>
-        
-          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/#more">more >></a>
-        
-      
-
-      
-    </p></div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DataBinding</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-通过Lifecycle-Aware-组件处理生命周期[翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -707,19 +626,19 @@
 
 
   
-    <article id="post-Android-进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据绑定适配器（Binding-Adapters）[-翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/Android-进程间通信/">Android 进程间通信</a>
+      <a class="article-title" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">数据绑定适配器（Binding-Adapters）[翻译]</a>
     </h1>
   
 
         
-        <a href="/2019/06/02/Android-进程间通信/" class="archive-article-date">
+        <a href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/" class="archive-article-date">
   	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
 </a>
         
@@ -727,24 +646,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>关于<code>Android</code>中的进程间通信，我们知道大概可以通过以下方式进行：</p>
-<ul>
-<li><code>Bundle</code>：四大组件间通信</li>
-<li><code>File</code>：文件共享</li>
-<li><code>ContentProvider</code>：应用间数据共享</li>
-<li><code>AIDL</code>：<code>Binder</code>机制</li>
-<li><code>Messager</code>：基于<code>AIDL</code>、<code>Handler</code>实现</li>
-<li><code>Socket</code>：建立<code>C/S</code>通信模型</li>
-</ul>
-<p><strong>本文主要探索的是<code>AIDL</code>和<code>Socket</code>两种实现方式</strong>，并在日常使用的基础上根据<code>AIDL</code>所生成的代码分析 <code>Binder</code>跨进程通信机制，感兴趣的童鞋可以看看。</p>
-<p>本文完整代码：<a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a></p>
+        <p>官方英文原文：<a href="https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters" target="_blank" rel="noopener">https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters</a></p>
+<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p><code>Binding Adapter</code>负责调用合适的框架调用来设置值，例如通过<code>setText</code>设置属性值、通过<code>setOnclickListener</code>设置事件监听器等。</p>
+<p><code>Databinging</code>类库允许通过调用特定的方法设置值、允许自定义绑定逻辑、允许指定适配器的返回类型。</p>
+<h3 id="二、设置属性值"><a href="#二、设置属性值" class="headerlink" title="二、设置属性值"></a>二、设置属性值</h3><p>每当一个已经绑定的值发生改变时，生成的绑定类都必须通过<code>View</code>的数据绑定表达式来设置值。也可以通过<code>Databinding</code>类库自动决定需要的方法，或者显式声明所需方法、或者提供自定义逻辑的方法。</p>
+<p><strong>1. 自动选择方法</strong></p>
+<p> 假设存在一个属性<code>example</code>，那么类库会自动去查找可以接受对应参数的<code>setExample(arg)</code>方法，并不需要考虑属性的命名空间，搜索方法时只会用到属性的名称和类型。<br>
         
-          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/#more">more >></a>
+          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/#more">more >></a>
         
       
 
       
-    </div>
+    </p></div>
     <div class="article-info article-info-index">
       
       
@@ -753,7 +667,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DataBinding</a>
         		</li>
       		
 		</ul>
@@ -763,7 +677,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">展开全文 >></a>
         </p>
       
 
@@ -849,6 +763,92 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/06/02/H5与原生混合开发总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Android-进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/Android-进程间通信/">Android 进程间通信</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/Android-进程间通信/" class="archive-article-date">
+  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>关于<code>Android</code>中的进程间通信，我们知道大概可以通过以下方式进行：</p>
+<ul>
+<li><code>Bundle</code>：四大组件间通信</li>
+<li><code>File</code>：文件共享</li>
+<li><code>ContentProvider</code>：应用间数据共享</li>
+<li><code>AIDL</code>：<code>Binder</code>机制</li>
+<li><code>Messager</code>：基于<code>AIDL</code>、<code>Handler</code>实现</li>
+<li><code>Socket</code>：建立<code>C/S</code>通信模型</li>
+</ul>
+<p><strong>本文主要探索的是<code>AIDL</code>和<code>Socket</code>两种实现方式</strong>，并在日常使用的基础上根据<code>AIDL</code>所生成的代码分析 <code>Binder</code>跨进程通信机制，感兴趣的童鞋可以看看。</p>
+<p>本文完整代码：<a href="https://github.com/horseLai/AndroidIPCDemo" target="_blank" rel="noopener">AndroidIPCDemo</a></p>
+        
+          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/02/Android-进程间通信/">展开全文 >></a>
         </p>
       
 
