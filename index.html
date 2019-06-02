@@ -539,6 +539,87 @@
 
 
   
+    <article id="post-数据绑定适配器（Binding-Adapters）[-翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">数据绑定适配器（Binding-Adapters）[翻译]</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/" class="archive-article-date">
+  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>官方英文原文：<a href="https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters" target="_blank" rel="noopener">https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters</a></p>
+<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p><code>Binding Adapter</code>负责调用合适的框架调用来设置值，例如通过<code>setText</code>设置属性值、通过<code>setOnclickListener</code>设置事件监听器等。</p>
+<p><code>Databinging</code>类库允许通过调用特定的方法设置值、允许自定义绑定逻辑、允许指定适配器的返回类型。</p>
+<h3 id="二、设置属性值"><a href="#二、设置属性值" class="headerlink" title="二、设置属性值"></a>二、设置属性值</h3><p>每当一个已经绑定的值发生改变时，生成的绑定类都必须通过<code>View</code>的数据绑定表达式来设置值。也可以通过<code>Databinding</code>类库自动决定需要的方法，或者显式声明所需方法、或者提供自定义逻辑的方法。</p>
+<p><strong>1. 自动选择方法</strong></p>
+<p> 假设存在一个属性<code>example</code>，那么类库会自动去查找可以接受对应参数的<code>setExample(arg)</code>方法，并不需要考虑属性的命名空间，搜索方法时只会用到属性的名称和类型。<br>
+        
+          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/#more">more >></a>
+        
+      
+
+      
+    </p></div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DataBinding</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-通过Lifecycle-Aware-组件处理生命周期[翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -597,87 +678,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/06/02/通过Lifecycle-Aware-组件处理生命周期[翻译]/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-数据绑定适配器（Binding-Adapters）[-翻译]" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">数据绑定适配器（Binding-Adapters）[翻译]</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>官方英文原文：<a href="https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters" target="_blank" rel="noopener">https://developer.android.google.cn/topic/libraries/data-binding/binding-adapters</a></p>
-<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p><code>Binding Adapter</code>负责调用合适的框架调用来设置值，例如通过<code>setText</code>设置属性值、通过<code>setOnclickListener</code>设置事件监听器等。</p>
-<p><code>Databinging</code>类库允许通过调用特定的方法设置值、允许自定义绑定逻辑、允许指定适配器的返回类型。</p>
-<h3 id="二、设置属性值"><a href="#二、设置属性值" class="headerlink" title="二、设置属性值"></a>二、设置属性值</h3><p>每当一个已经绑定的值发生改变时，生成的绑定类都必须通过<code>View</code>的数据绑定表达式来设置值。也可以通过<code>Databinding</code>类库自动决定需要的方法，或者显式声明所需方法、或者提供自定义逻辑的方法。</p>
-<p><strong>1. 自动选择方法</strong></p>
-<p> 假设存在一个属性<code>example</code>，那么类库会自动去查找可以接受对应参数的<code>setExample(arg)</code>方法，并不需要考虑属性的命名空间，搜索方法时只会用到属性的名称和类型。<br>
-        
-          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/#more">more >></a>
-        
-      
-
-      
-    </p></div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DataBinding</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/数据绑定适配器（Binding-Adapters）[-翻译]/">展开全文 >></a>
         </p>
       
 
@@ -792,6 +792,87 @@
 
 
   
+    <article id="post-再读Handler机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/再读Handler机制/">再读Handler机制</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/再读Handler机制/" class="archive-article-date">
+  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><blockquote>
+<p>距离上一次阅读<code>Handler</code>源码已经半年多过去了，当时读源码的目的更多的是忙于毕业找工作，为面试做准备，现在则是想更多地了解<code>Android</code>相关机制。半年多过去了，回头看当时的源码解读笔记（当时不写博客），发现有很多地方并没有很好地解释清楚，于是想趁着这2018结束之际再次根据自己的想法整理一遍，感兴趣的童鞋可以看看。</p>
+</blockquote>
+<p>所谓<code>Handler</code>机制，实际是线程切换机制。在我们日常开发中用的最多的是通过<code>Handler</code>来更新<code>UI</code>视图，而<code>Handler</code>除了用于线程切换外，<code>Handler</code>、<code>Looper</code>、<code>ThreadLocal</code>、<code>MessageQueue</code>、<code>Message</code>如何融合、构成一个成熟框架的思想更值得我们学习，这也是写本文的目的：比较深入全面地理解<code>Handler</code>机制。</p>
+<h3 id="二、预热知识"><a href="#二、预热知识" class="headerlink" title="二、预热知识"></a>二、预热知识</h3><p>通常，我们使用<code>Handler</code>是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private Handler mHandler1;</span><br><span class="line"></span><br><span class="line"> mHandler1 = new Handler(new Handler.Callback() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public boolean handleMessage(Message msg) &#123;</span><br><span class="line">            // 操作 UI</span><br><span class="line">            textView.setText(String.valueOf(msg.obj));</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/06/02/再读Handler机制/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/02/再读Handler机制/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Android-进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -849,87 +930,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/06/02/Android-进程间通信/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-再读Handler机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/再读Handler机制/">再读Handler机制</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/再读Handler机制/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><blockquote>
-<p>距离上一次阅读<code>Handler</code>源码已经半年多过去了，当时读源码的目的更多的是忙于毕业找工作，为面试做准备，现在则是想更多地了解<code>Android</code>相关机制。半年多过去了，回头看当时的源码解读笔记（当时不写博客），发现有很多地方并没有很好地解释清楚，于是想趁着这2018结束之际再次根据自己的想法整理一遍，感兴趣的童鞋可以看看。</p>
-</blockquote>
-<p>所谓<code>Handler</code>机制，实际是线程切换机制。在我们日常开发中用的最多的是通过<code>Handler</code>来更新<code>UI</code>视图，而<code>Handler</code>除了用于线程切换外，<code>Handler</code>、<code>Looper</code>、<code>ThreadLocal</code>、<code>MessageQueue</code>、<code>Message</code>如何融合、构成一个成熟框架的思想更值得我们学习，这也是写本文的目的：比较深入全面地理解<code>Handler</code>机制。</p>
-<h3 id="二、预热知识"><a href="#二、预热知识" class="headerlink" title="二、预热知识"></a>二、预热知识</h3><p>通常，我们使用<code>Handler</code>是这样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private Handler mHandler1;</span><br><span class="line"></span><br><span class="line"> mHandler1 = new Handler(new Handler.Callback() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public boolean handleMessage(Message msg) &#123;</span><br><span class="line">            // 操作 UI</span><br><span class="line">            textView.setText(String.valueOf(msg.obj));</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/06/02/再读Handler机制/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/再读Handler机制/">展开全文 >></a>
         </p>
       
 
