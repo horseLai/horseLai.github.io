@@ -9,6 +9,7 @@
   <title>Android 进程间通信 | horseLai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="一、引言关于Android中的进程间通信，我们知道大概可以通过以下方式进行：  Bundle：四大组件间通信 File：文件共享 ContentProvider：应用间数据共享 AIDL：Binder机制 Messager：基于AIDL、Handler实现 Socket：建立C/S通信模型  本文主要探索的是AIDL和Socket两种实现方式，并在日常使用的基础上根据AIDL所生成的代码分析 Bi">
+<meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android 进程间通信">
 <meta property="og:url" content="https://horselai.github.io/2019/06/02/Android-进程间通信/index.html">
@@ -24,11 +25,13 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-560c9a9e1d25a1c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-d6b681bc8d4ef7da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-f120f2f156a75086.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-06-01T18:23:30.222Z">
+<meta property="og:updated_time" content="2019-06-02T08:31:44.661Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 进程间通信">
 <meta name="twitter:description" content="一、引言关于Android中的进程间通信，我们知道大概可以通过以下方式进行：  Bundle：四大组件间通信 File：文件共享 ContentProvider：应用间数据共享 AIDL：Binder机制 Messager：基于AIDL、Handler实现 Socket：建立C/S通信模型  本文主要探索的是AIDL和Socket两种实现方式，并在日常使用的基础上根据AIDL所生成的代码分析 Bi">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5879616-f53350287d6fac66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="horseLai" type="application/atom+xml">
   
   
     <link rel="icon" href="https://upload.jianshu.io/users/upload_avatars/5879616/71a4db70-9ef1-441d-84f0-a5e5a1c29b1c.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240">
@@ -69,7 +72,7 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/">测试</a></li>
+				<li><a href="/life/">生活</a></li>
 	        
 			</ul>
 		</nav>
@@ -141,7 +144,7 @@
 				
 					<li style="width: 50%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/">测试</a></li>
+					<li style="width: 50%"><a href="/life/">生活</a></li>
 		        
 				</ul>
 			</nav>
@@ -287,6 +290,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -490,6 +504,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">第三方库源码分析</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -539,7 +561,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">测试一下子</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">我是谁？我只是一个小小程序员！</div>
   	  	
     	</section>
     
