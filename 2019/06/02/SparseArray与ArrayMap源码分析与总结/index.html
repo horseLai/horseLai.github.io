@@ -17,7 +17,7 @@
 <meta property="og:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-06-02T09:47:38.650Z">
+<meta property="og:updated_time" content="2019-06-02T09:51:01.355Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SparseArray与ArrayMap源码分析与总结">
 <meta name="twitter:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
@@ -265,8 +265,11 @@
 </ul>
 </li>
 <li><p><strong>ArrayMap和HashMap的区别？</strong></p>
-<pre><code>- **ArrayMap的存在是为了解决HashMap占用内存大的问题，它内部使用了一个int数组用来存储元素的hashcode，使用了一个Object数组用来存储元素**，两者根据索引对应形成key-value结构，这样就不用像HashMap那样需要额外的创建Entry对象来存储，减少了内存占用。但是在数据量比较大时，ArrayMap的性能就会远低于HashMap，因为 **ArrayMap基于二分查找算法来查找元素的**，并且数组的插入操作如果不是末尾的话需要挪动数组元素，效率较低。</code></pre><ul>
-<li><strong>而HashMap内部基于数组+单向链表+红黑树实现，也是key-value结构</strong>， 正如刚才提到的，HashMap每put一个元素都需要创建一个Entry来存放元素，导致它的内存占用会比较大，但是在大数据量的时候，因为HashMap中当出现冲突时，冲突的数据量大于8，就会从单向链表转换成红黑树，<strong>而红黑树的插入、删除、查找的时间复杂度为O(logn),相对于ArrayMap的数组而言在插入和删除操作上要快不少</strong>，所以数据量上百的情况下，使用HashMap会有更高的效率。</li>
+<ul>
+<li><p><strong>ArrayMap的存在是为了解决HashMap占用内存大的问题，它内部使用了一个int数组用来存储元素的hashcode，使用了一个Object数组用来存储元素</strong> ，两者根据索引对应形成key-value结构，这样就不用像HashMap那样需要额外的创建Entry对象来存储，减少了内存占用。但是在数据量比较大时，ArrayMap的性能就会远低于HashMap，因为 <strong>ArrayMap基于二分查找算法来查找元素的</strong>，并且数组的插入操作如果不是末尾的话需要挪动数组元素，效率较低。</p>
+</li>
+<li><p><strong>而HashMap内部基于数组+单向链表+红黑树实现，也是key-value结构</strong>， 正如刚才提到的，HashMap每put一个元素都需要创建一个Entry来存放元素，导致它的内存占用会比较大，但是在大数据量的时候，因为HashMap中当出现冲突时，冲突的数据量大于8，就会从单向链表转换成红黑树，<strong>而红黑树的插入、删除、查找的时间复杂度为O(logn),相对于ArrayMap的数组而言在插入和删除操作上要快不少</strong>，所以数据量上百的情况下，使用HashMap会有更高的效率。</p>
+</li>
 </ul>
 </li>
 <li><p><strong>如何解决冲突问题？</strong> 在<code>ArrayMap</code>中，假设存在冲突的话，并不会像<code>HashMap</code>那样使用单向链表或红黑树来保留这些冲突的元素，而是全部<code>key</code>、<code>value</code>都存储到一个数组当中，然后查找的话通过二分查找进行，这也就是当数据量大时不宜用<code>ArrayMap</code>的原因了。</p>
@@ -513,11 +516,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">第三方库源码分析</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color4">第三方库源码分析</a>
               </li>
             
             <div class="clearfix"></div>
