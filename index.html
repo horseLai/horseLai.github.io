@@ -319,15 +319,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4></blockquote>
-<ul>
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><ul>
 <li><code>SparseArray</code>是在<code>API level 1</code>就已经添加的适用于<code>Android</code>的集合类，而<code>ArrayMap</code>实在<code>API level 19</code>才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换<code>JDK</code>中类似于<code>HashMap</code>之类的集合类模板。</li>
 <li>由于两者源码实际上存在很多相似之处，因此就放一起看了，源码还是比较容易理解的。</li>
 </ul>
-<blockquote>
-<h4 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h4></blockquote>
-<ul>
+<h3 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h3><ul>
 <li><code>SparseArray</code>的数据构造可以从下面这几行代码得知，显然是<strong>使用两个数组分别存储<code>key</code>和<code>value</code>的值，而这两者又因元素索引存在对应关系而刚好形成元素间的相互映射</strong>，可以说是很简单粗暴又有效了。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class SparseArray&lt;E&gt; implements Cloneable &#123; </span><br><span class="line">    // ...</span><br><span class="line">    private int[] mKeys;   </span><br><span class="line">    private Object[] mValues;</span><br><span class="line">    private int mSize;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 </li>
@@ -711,91 +707,6 @@
 
 
   
-    <article id="post-H5与原生混合开发总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/02/H5与原生混合开发总结/">H5与原生混合开发总结</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/02/H5与原生混合开发总结/" class="archive-article-date">
-  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>本文主要针对<code>H5</code>与原生混合开发中的交互问题进行讨论，当然，这仅仅是鄙人的见解，求同存异。</p>
-<p><strong>本文主要针对以下问题进行总结：</strong></p>
-<ol>
-<li>如何实现<code>JS</code>与<code>Andriod</code>的交互？</li>
-<li>针对<code>WebView</code>启动慢问题，如何优化？</li>
-<li>如果存在多个<code>H5</code>模块包，如何实现模块包的完全更新与部分更新？</li>
-<li>针对以上问题的，如何建立一个公用的工具集（框架？）？</li>
-<li>遇到的问题及解决办法。</li>
-</ol>
-<p>OK, 开始吧！</p>
-        
-          <a class="article-more-a" href="/2019/06/02/H5与原生混合开发总结/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/02/H5与原生混合开发总结/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Android-进程间通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -853,6 +764,91 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/06/02/Android-进程间通信/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-H5与原生混合开发总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/02/H5与原生混合开发总结/">H5与原生混合开发总结</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/02/H5与原生混合开发总结/" class="archive-article-date">
+  	<time datetime="2019-06-01T18:08:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h3><p>本文主要针对<code>H5</code>与原生混合开发中的交互问题进行讨论，当然，这仅仅是鄙人的见解，求同存异。</p>
+<p><strong>本文主要针对以下问题进行总结：</strong></p>
+<ol>
+<li>如何实现<code>JS</code>与<code>Andriod</code>的交互？</li>
+<li>针对<code>WebView</code>启动慢问题，如何优化？</li>
+<li>如果存在多个<code>H5</code>模块包，如何实现模块包的完全更新与部分更新？</li>
+<li>针对以上问题的，如何建立一个公用的工具集（框架？）？</li>
+<li>遇到的问题及解决办法。</li>
+</ol>
+<p>OK, 开始吧！</p>
+        
+          <a class="article-more-a" href="/2019/06/02/H5与原生混合开发总结/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/02/H5与原生混合开发总结/">展开全文 >></a>
         </p>
       
 

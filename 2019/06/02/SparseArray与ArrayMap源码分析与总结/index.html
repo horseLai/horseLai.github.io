@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="https://horselai.github.io">
   <title>SparseArray与ArrayMap源码分析与总结 | horseLai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="引言  SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，">
+  <meta name="description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
 <meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SparseArray与ArrayMap源码分析与总结">
 <meta property="og:url" content="https://horselai.github.io/2019/06/02/SparseArray与ArrayMap源码分析与总结/index.html">
 <meta property="og:site_name" content="horseLai">
-<meta property="og:description" content="引言  SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，">
+<meta property="og:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-06-02T09:20:14.918Z">
+<meta property="og:updated_time" content="2019-06-02T09:29:47.356Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SparseArray与ArrayMap源码分析与总结">
-<meta name="twitter:description" content="引言  SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，">
+<meta name="twitter:description" content="引言 SparseArray是在API level 1就已经添加的适用于Android的集合类，而ArrayMap实在API level 19才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换JDK中类似于HashMap之类的集合类模板。 由于两者源码实际上存在很多相似之处，因此就放一起看了，源码">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="horseLai" type="application/atom+xml">
@@ -165,15 +165,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4></blockquote>
-<ul>
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><ul>
 <li><code>SparseArray</code>是在<code>API level 1</code>就已经添加的适用于<code>Android</code>的集合类，而<code>ArrayMap</code>实在<code>API level 19</code>才加入的集合类，虽说这两者实在不同时期加入的，但是它们的目的只有一个，那就是在小数据量的情况下尽可能权衡内存占用以及使用效率，从而达到小数据量时能够替换<code>JDK</code>中类似于<code>HashMap</code>之类的集合类模板。</li>
 <li>由于两者源码实际上存在很多相似之处，因此就放一起看了，源码还是比较容易理解的。</li>
 </ul>
-<blockquote>
-<h4 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h4></blockquote>
-<ul>
+<h3 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h3><ul>
 <li><code>SparseArray</code>的数据构造可以从下面这几行代码得知，显然是<strong>使用两个数组分别存储<code>key</code>和<code>value</code>的值，而这两者又因元素索引存在对应关系而刚好形成元素间的相互映射</strong>，可以说是很简单粗暴又有效了。  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class SparseArray&lt;E&gt; implements Cloneable &#123; </span><br><span class="line">    // ...</span><br><span class="line">    private int[] mKeys;   </span><br><span class="line">    private Object[] mValues;</span><br><span class="line">    private int mSize;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 </li>
@@ -183,7 +179,7 @@
 <li><p><strong>put方法</strong>：揭露核心的方法</p>
 <ul>
 <li><p>通过源码可以看出，<code>SparseArray</code>使用的是二分查找法来查找key所在的位置索引，如果存在则替换掉对应索引上的value，如果不存在，则将在索引取反后的位置上添加元素，这点跟<code>JDK</code>中的<code>Map</code>是一样的行为，存在则覆盖。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public void put(int key, E value) &#123;</span><br><span class="line">    // 二分查找算法 找到 key，也就是索引位置</span><br><span class="line">    int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</span><br><span class="line"></span><br><span class="line">    if (i &gt;= 0) &#123; // 存在</span><br><span class="line">        mValues[i] = value; // value数组中找到key位置上的value</span><br><span class="line">    &#125; else &#123; // 不存在</span><br><span class="line">        i = ~i; </span><br><span class="line">        if (i &lt; mSize &amp;&amp; mValues[i] == DELETED) &#123;</span><br><span class="line">            mKeys[i] = key;</span><br><span class="line">            mValues[i] = value;</span><br><span class="line">            return;</span><br><span class="line">        &#125; </span><br><span class="line">        if (mGarbage &amp;&amp; mSize &gt;= mKeys.length) &#123;//可能value元素已经被删除了</span><br><span class="line">            gc();  // 那么chufa一次gc</span><br><span class="line">            // 中心搜索一遍</span><br><span class="line">            i = ~ContainerHelpers.binarySearch(mKeys, mSize, key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mKeys = GrowingArrayUtils.insert(mKeys, mSize, i, key);</span><br><span class="line">        mValues = GrowingArrayUtils.insert(mValues, mSize, i, value);</span><br><span class="line">        mSize++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```   </span><br><span class="line">- 这里的`gc`并非`JVM`中的那个`GC`，而是说当我们删除了某个元素之后，被删除元素所占用的那个位置上的数据就标记成了垃圾数据，然后就会通过`gc`来去除这个位置上的元素，而本质上，对于数组而言，就是挪动位置覆盖掉这个位置咯。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public void put(int key, E value) &#123;</span><br><span class="line">    // 二分查找算法 找到 key，也就是索引位置</span><br><span class="line">    int i = ContainerHelpers.binarySearch(mKeys, mSize, key);</span><br><span class="line"></span><br><span class="line">    if (i &gt;= 0) &#123; // 存在</span><br><span class="line">        mValues[i] = value; // value数组中找到key位置上的value</span><br><span class="line">    &#125; else &#123; // 不存在</span><br><span class="line">        i = ~i; </span><br><span class="line">        if (i &lt; mSize &amp;&amp; mValues[i] == DELETED) &#123;</span><br><span class="line">            mKeys[i] = key;</span><br><span class="line">            mValues[i] = value;</span><br><span class="line">            return;</span><br><span class="line">        &#125; </span><br><span class="line">        if (mGarbage &amp;&amp; mSize &gt;= mKeys.length) &#123;//可能value元素已经被删除了</span><br><span class="line">            gc();  // 那么chufa一次gc</span><br><span class="line">            // 中心搜索一遍</span><br><span class="line">            i = ~ContainerHelpers.binarySearch(mKeys, mSize, key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mKeys = GrowingArrayUtils.insert(mKeys, mSize, i, key);</span><br><span class="line">        mValues = GrowingArrayUtils.insert(mValues, mSize, i, value);</span><br><span class="line">        mSize++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">- 这里的`gc`并非`JVM`中的那个`GC`，而是说当我们删除了某个元素之后，被删除元素所占用的那个位置上的数据就标记成了垃圾数据，然后就会通过`gc`来去除这个位置上的元素，而本质上，对于数组而言，就是挪动位置覆盖掉这个位置咯。</span><br></pre></td></tr></table></figure>
 
 <p>private void gc() {<br>  int n = mSize;<br>  int o = 0;<br>  int[] keys = mKeys;<br>  Object[] values = mValues;<br>  for (int i = 0; i &lt; n; i++) {</p>
 <pre><code>Object val = values[i]; 
@@ -203,7 +199,7 @@ if (val != DELETED) {
     mValues[i] = DELETED;
     mGarbage = true;
 }</code></pre><p>  }<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt; #### SparseArray 综述</span><br><span class="line"></span><br><span class="line">- **特点**：使用`int`数组作为`map`的`key`容器，`Object`数组作为`value`容器，使用索引对应的形式组成`key-value`这使得`SparseArray`**可以不按照像数组索引那样的顺序来添加元素**。可看成增强型的数组或者`ArrayList`。</span><br><span class="line">- **查找**：使用**二分查找法**查找`key`在数组中的位置,然后根据这个数组位置得到对应`value`数组中的`value`值。</span><br><span class="line">- **优劣**：相对于`HashMap`，合理使用`SparseArray`可以节省大量创建`Entry`节点时产生的内存，提高性能，但是因为基于数组，插入和删除操作需要挪动数组，非常消耗性能,而当**数据有几百条时，性能会比HashMap低近50%，因此`SparseArray`适用于数据量很小的场景**。</span><br><span class="line">- **使用场景举例**：</span><br><span class="line">    - **通过`View id`来映射`View`对象实例**。  一个非常现实的场景是，当我们使用`RecyclerView`时，我们可能需要创建若干个`ViewHolder`，特别是如果一个列表包含若干中布局类型的时候，而如果我们不适用类似于`ButterKnife`或`DataBinding`这类工具的话，那么我们需要对每个`控件`进行`findViewById`，这是件很糟心的事情，那么我们可以怎么简化呢？欸，这种情况可以使用`SparseArray`来缓存一下我们的`View`（实际上`ArrayMap`、`HashMap`等也可以）,比方说以下示例代码：</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### SparseArray 综述</span><br><span class="line"></span><br><span class="line">- **特点**：使用`int`数组作为`map`的`key`容器，`Object`数组作为`value`容器，使用索引对应的形式组成`key-value`这使得`SparseArray`**可以不按照像数组索引那样的顺序来添加元素**。可看成增强型的数组或者`ArrayList`。</span><br><span class="line">- **查找**：使用**二分查找法**查找`key`在数组中的位置,然后根据这个数组位置得到对应`value`数组中的`value`值。</span><br><span class="line">- **优劣**：相对于`HashMap`，合理使用`SparseArray`可以节省大量创建`Entry`节点时产生的内存，提高性能，但是因为基于数组，插入和删除操作需要挪动数组，非常消耗性能,而当**数据有几百条时，性能会比HashMap低近50%，因此`SparseArray`适用于数据量很小的场景**。</span><br><span class="line">- **使用场景举例**：</span><br><span class="line">    - **通过`View id`来映射`View`对象实例**。  一个非常现实的场景是，当我们使用`RecyclerView`时，我们可能需要创建若干个`ViewHolder`，特别是如果一个列表包含若干中布局类型的时候，而如果我们不适用类似于`ButterKnife`或`DataBinding`这类工具的话，那么我们需要对每个`控件`进行`findViewById`，这是件很糟心的事情，那么我们可以怎么简化呢？欸，这种情况可以使用`SparseArray`来缓存一下我们的`View`（实际上`ArrayMap`、`HashMap`等也可以）,比方说以下示例代码：</span><br></pre></td></tr></table></figure>
 
 <p>public class CommViewHolder extends RecyclerView.ViewHolder {</p>
 <p>  private SparseArray<view> mViewCache;<br>  private Object tag;</view></p>
@@ -224,7 +220,7 @@ mViewCache = null;</code></pre><p>  }</p>
 <pre><code>this.tag = tag;</code></pre><p>  }</p>
 <p>  public Object getTag() {</p>
 <pre><code>return tag;</code></pre><p>  }<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    通过上面这个通用的`ViewHolder`，我们就可以应用于任意的布局类型，而不用每个都去写一个对应的`ViewHolder`了，可以说很方便了。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">---- </span><br><span class="line">&gt; #### ArrayMap</span><br><span class="line"></span><br><span class="line">- 通过阅读`ArrayMap`的源码可以发现，它和`SparseArray`简直就是亲生兄弟啊，不同点就是，`ArrayMap`具备完整的`Map`特性，因为继承自`Map`，并且具备哈希表的相关特性。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    通过上面这个通用的`ViewHolder`，我们就可以应用于任意的布局类型，而不用每个都去写一个对应的`ViewHolder`了，可以说很方便了。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">---- </span><br><span class="line">### ArrayMap</span><br><span class="line"></span><br><span class="line">- 通过阅读`ArrayMap`的源码可以发现，它和`SparseArray`简直就是亲生兄弟啊，不同点就是，`ArrayMap`具备完整的`Map`特性，因为继承自`Map`，并且具备哈希表的相关特性。</span><br></pre></td></tr></table></figure>
 
 <p>public final class ArrayMap&lt;K, V&gt; implements Map&lt;K, V&gt; {</p>
 <p>  final boolean mIdentityHashCode;<br>  int[] mHashes; // 存储哈希值<br>  Object[] mArray; // 存储元素<br>  int mSize;<br>  MapCollections&lt;K, V&gt; mCollections;<br>}</p>
@@ -291,9 +287,7 @@ mViewCache = null;</code></pre><p>  }</p>
 <p><img src="https://upload-images.jianshu.io/upload_images/5879616-fdd7ad9f7fd2f667.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mArray数组的存储结构"></p>
 </li>
 </ul>
-<blockquote>
-<h4 id="ArrayMap-综述"><a href="#ArrayMap-综述" class="headerlink" title="ArrayMap 综述"></a>ArrayMap 综述</h4></blockquote>
-<ul>
+<h3 id="ArrayMap-综述"><a href="#ArrayMap-综述" class="headerlink" title="ArrayMap 综述"></a>ArrayMap 综述</h3><ul>
 <li><p><strong>特点</strong></p>
 <ul>
 <li>实现了<code>Map</code>接口，并使用<code>int[]</code>数来存储<code>key</code>的<code>hash</code>值，数组的索引用作<code>index</code>，而使用<code>Object[]</code>数组来存储<code>key&lt;-&gt;value</code> ，这还是比较新颖的 。</li>
@@ -430,7 +424,7 @@ mViewCache = null;</code></pre><p>  }</p>
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SparseArray"><span class="toc-number">2.</span> <span class="toc-text">SparseArray</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ArrayMap-综述"><span class="toc-number">3.</span> <span class="toc-text">ArrayMap 综述</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SparseArray"><span class="toc-number">2.</span> <span class="toc-text">SparseArray</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ArrayMap-综述"><span class="toc-number">3.</span> <span class="toc-text">ArrayMap 综述</span></a></li></ol>
                     </div>
                 </span>
             </div>
